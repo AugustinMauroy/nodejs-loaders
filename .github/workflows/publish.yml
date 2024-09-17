@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - '**@*'
+# example of tag:
+# for package tsx
+# v1.0.0@tsx
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +19,12 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm run compile --workspaces --if-present
       - name: "DEBUG: Publish package"
-        run: echo "Publishing package ${GITHUB_REF_NAME%@*}"
+        #run: echo "Publishing package ${GITHUB_REF_NAME%@*}"
+        # workspace is w="packages/tsx"
+        # small script to get the package name based
+        run: \
+          w=$(echo $GITHUB_WORKSPACE | awk -F/ '{print $NF}'); \
+          echo "Publishing package $w";
+
+
