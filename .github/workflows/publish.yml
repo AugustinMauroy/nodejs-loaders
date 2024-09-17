@@ -1,7 +1,8 @@
 name: Publish to NPM
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - '**@*'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,6 +16,6 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm run compile --workspaces --if-present
+      - name: "DEBUG: Publish package"
+        run: echo "Publishing package ${GITHUB_REF_NAME%@*}"
